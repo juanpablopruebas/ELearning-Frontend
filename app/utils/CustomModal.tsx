@@ -16,29 +16,32 @@ import { useSocialAuthMutation } from "@/redux/features/api/authApi";
 export const CustomModals = () => {
   const { openModal, setOpenModal } = useModalStore();
   const { user } = useSelector((state: IRootState) => state.auth);
-  const { data } = useSession();
+  const { data, status } = useSession();
   const [socialAuth, { isSuccess }] = useSocialAuthMutation();
 
   useEffect(() => {
-    const handleAuth = async () => {
-      if (!user) {
-        if (data?.user) {
-          await socialAuth({
-            email: data.user?.email,
-            name: data.user?.name,
-            avatar: data.user?.image,
-          });
-        } else {
-          await signOut();
-        }
-      }
-      if (isSuccess) {
-        toast.success("Login successfully");
-      }
-    };
-    handleAuth();
+    if (status === "authenticated" && data?.user && !user) {
+      socialAuth({
+        email: data.user.email!,
+        name: data.user.name!,
+        avatar: data.user.image!,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isSuccess, data?.user]);
+  }, [status, data?.user, user]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Login successfully");
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (status === "unauthenticated" && user) {
+      signOut({ redirect: false });
+    }
+  }, [status, user]);
+
   return (
     <>
       <Modal
