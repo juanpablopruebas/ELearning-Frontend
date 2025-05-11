@@ -32,7 +32,6 @@ export const Profile = () => {
   const handleLogout = async () => {
     if (status === "authenticated" && dataSession?.user) {
       await signOut();
-      return;
     }
     setTriggerLogout(true);
   };
