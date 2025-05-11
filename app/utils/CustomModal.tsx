@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { IRootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
-import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useSocialAuthMutation } from "@/redux/features/api/authApi";
 
@@ -35,12 +34,6 @@ export const CustomModals = () => {
       toast.success("Login successfully");
     }
   }, [isSuccess]);
-
-  useEffect(() => {
-    if (status === "unauthenticated" && user) {
-      signOut({ redirect: false });
-    }
-  }, [status, user]);
 
   return (
     <>

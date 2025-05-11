@@ -1,4 +1,3 @@
-import { SocketProvider } from "@/app/utils/SocketProvider";
 import { CourseAccess } from "@/components/public/CourseAccess";
 
 interface CourseAccessPageProps {
@@ -8,11 +7,7 @@ interface CourseAccessPageProps {
 const CourseAccessPage = async ({ params }: CourseAccessPageProps) => {
   const { id } = await params;
 
-  return (
-    <SocketProvider>
-      <CourseAccess id={id} />
-    </SocketProvider>
-  );
+  return <CourseAccess id={id} />;
 };
 
 export default CourseAccessPage;

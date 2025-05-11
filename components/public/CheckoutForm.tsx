@@ -55,12 +55,14 @@ export const CheckoutForm = ({ course, user }: CheckoutFormProps) => {
   };
 
   useEffect(() => {
-    if (isSuccess && orderData?.order && socket) {
-      socket.emit("notification", {
-        title: "New Order",
-        message: `You have a new order from ${course.name}`,
-        userId: user?._id,
-      });
+    if (isSuccess && orderData?.userCourses) {
+      if (socket) {
+        socket.emit("notification", {
+          title: "New Order",
+          message: `You have a new order from ${course.name}`,
+          userId: user?._id,
+        });
+      }
       redirect(`/course-access/${course._id}`);
     }
 
@@ -76,7 +78,7 @@ export const CheckoutForm = ({ course, user }: CheckoutFormProps) => {
     }
   }, [
     course._id,
-    orderData?.order,
+    orderData?.userCourses,
     error,
     course.name,
     user?._id,

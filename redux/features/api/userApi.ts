@@ -41,6 +41,14 @@ export const userApi = indexApi.injectEndpoints({
         body: { id, role },
         credentials: "include",
       }),
+    }),
+    updateMyselfUserRole: builder.mutation({
+      query: ({ id, role }) => ({
+        url: "/update-user-role",
+        method: "PUT",
+        body: { id, role },
+        credentials: "include",
+      }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
@@ -72,4 +80,5 @@ export const {
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
+  useUpdateMyselfUserRoleMutation,
 } = userApi;

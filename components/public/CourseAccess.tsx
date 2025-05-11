@@ -1,33 +1,29 @@
 "use client";
 
 import { useEffect } from "react";
-import { Loader } from "../layout/Loader";
 import { CourseContent } from "./CourseContent";
-import { useLoadUserQuery } from "@/redux/features/api/indexApi";
 import { useRouter } from "next/navigation";
+import { IRootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 export const CourseAccess = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { data, isLoading, error } = useLoadUserQuery({});
+  const { user } = useSelector((state: IRootState) => state.auth);
 
   useEffect(() => {
-    if (!isLoading) {
-      const purchased = data?.user?.courses.some(
+    if (user) {
+      const purchased = user?.courses.some(
         ({ courseId }: { courseId: string }) => courseId === id
       );
-      if (error || !purchased) {
+      if (!purchased) {
         router.push("/");
       }
     }
-  }, [isLoading, error, data?.user?.courses, id, router]);
-
-  if (isLoading) {
-    return <Loader />;
-  }
+  }, [id, router, user]);
 
   return (
     <main className="min-h-screen pt-16 pb-8">
-      <CourseContent id={id} user={data?.user} />
+      <CourseContent id={id} user={user} />
     </main>
   );
 };

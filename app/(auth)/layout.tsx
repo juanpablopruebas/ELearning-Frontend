@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { useSelector } from "react-redux";
 import { IRootState } from "@/redux/store";
+import { SessionProvider } from "next-auth/react";
 
 export default function AuthLayout({
   children,
@@ -11,9 +12,5 @@ export default function AuthLayout({
 }>) {
   const { user } = useSelector((state: IRootState) => state.auth);
   if (!user?.isVerified) redirect("/");
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <SessionProvider>{children}</SessionProvider>;
 }

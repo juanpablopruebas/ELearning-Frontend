@@ -19,7 +19,7 @@ import { useSocket } from "@/app/utils/SocketProvider";
 interface CourseContentMediaProps {
   data: Course;
   id: string;
-  user?: User;
+  user: User | null;
   activeVideo: number;
   setActiveVideo: (video: number) => void;
   refetch: () => void;

@@ -24,7 +24,7 @@ type AllInvoicesType = {
 };
 
 export const AllInvoices = ({ isDashboard = false }: AllInvoicesType) => {
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const { data: ordersData, isLoading, isSuccess } = useGetAllOrdersQuery({});
   const { data: usersData } = useGetAllUsersQuery({});
   const { data: coursesData } = useGetAllCoursesQuery({});
@@ -109,24 +109,65 @@ export const AllInvoices = ({ isDashboard = false }: AllInvoicesType) => {
               overflow: "scroll",
               "& .MuiDataGrid-root": { border: "none" },
               "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
               "& .MuiDataGrid-row": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
               "& .MuiDataGrid-row--borderBottom": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
                 backgroundColor:
-                  theme === "dark" ? "#18181b !important" : "#fff !important",
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#18181b !important"
+                      : "#fff !important"
+                    : theme === "dark"
+                    ? "#18181b !important"
+                    : "#fff !important",
               },
               "& .MuiDataGrid-columnSeparator": {
                 display: "none !important",
               },
               "& .MuiSvgIcon-root": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
               "& .MuiTablePagination-root": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
             }}
           >

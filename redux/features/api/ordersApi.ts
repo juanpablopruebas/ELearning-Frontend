@@ -1,3 +1,4 @@
+import { userUpdatedCourses } from "../slice/authSlice";
 import { indexApi } from "./indexApi";
 
 export const ordersApi = indexApi.injectEndpoints({
@@ -19,6 +20,18 @@ export const ordersApi = indexApi.injectEndpoints({
         },
         credentials: "include",
       }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(
+            userUpdatedCourses({
+              userCourses: result.data.userCourses,
+            })
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
     getStripePublishableKey: builder.query({
       query: () => ({

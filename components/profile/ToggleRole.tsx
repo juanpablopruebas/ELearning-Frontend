@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { useUpdateUserRoleMutation } from "@/redux/features/api/userApi";
+import { useUpdateMyselfUserRoleMutation } from "@/redux/features/api/userApi";
 import { toast } from "react-hot-toast";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,8 @@ export const ToggleRole = ({ user }: ToggleRoleProps) => {
     (user?.role as "admin" | "user") || "user"
   );
 
-  const [updateUserRole, { isSuccess, error }] = useUpdateUserRoleMutation();
+  const [updateUserRole, { isSuccess, error }] =
+    useUpdateMyselfUserRoleMutation();
 
   useEffect(() => {
     if (isSuccess) {

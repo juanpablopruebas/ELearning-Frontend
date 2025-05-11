@@ -101,7 +101,7 @@ export const DashboardHeader = () => {
             className="text-gray-700 dark:text-gray-300"
           />
           {notifications.length > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 text-xs text-white bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+            <span className="absolute -top-1 -right-1 w-4 h-4 text-xs text-white bg-red-500 rounded-full flex items-center justify-center animate-pulse select-none">
               {notifications.length}
             </span>
           )}

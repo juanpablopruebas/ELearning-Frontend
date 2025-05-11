@@ -1,4 +1,3 @@
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userLoggedIn } from "../slice/authSlice";
 
@@ -16,10 +15,11 @@ export const indexApi = createApi({
       }),
     }),
     loadUser: builder.query({
-      query: () => ({
+      query: (noCache) => ({
         url: "me",
         method: "GET",
         credentials: "include",
+        params: typeof noCache === "boolean" ? { noCache } : undefined,
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {

@@ -19,18 +19,16 @@ import {
 import toast from "react-hot-toast";
 import { useModalStore } from "@/app/hooks/modalStore";
 import { redirect } from "next/navigation";
-import { useLoadUserQuery } from "@/redux/features/api/indexApi";
 import { useSocket } from "@/app/utils/SocketProvider";
+import { useSelector } from "react-redux";
+import { IRootState } from "@/redux/store";
 
 interface CourseDetailsProps {
   course: SingleCourse;
 }
 
 export const CourseDetails = ({ course }: CourseDetailsProps) => {
-  const {
-    data: { user },
-    refetch,
-  } = useLoadUserQuery({}, { refetchOnMountOrArgChange: true });
+  const { user: userData } = useSelector((state: IRootState) => state.auth);
 
   const { setOpenModal } = useModalStore();
   const socket = useSocket();
@@ -50,12 +48,12 @@ export const CourseDetails = ({ course }: CourseDetailsProps) => {
   const discount =
     ((course.estimatedPrice - course.price) / course.estimatedPrice) * 100;
   const discountPct = discount > 0 ? `${discount.toFixed(0)}% Off` : null;
-  const isPurchased = !!user?.courses.find(
+  const isPurchased = userData?.courses.find(
     (c: { courseId: string }) => c.courseId === course._id
   );
 
   const handleBuyNow = async () => {
-    if (!user) {
+    if (!userData) {
       setOpenModal("signin");
       return;
     }
@@ -63,11 +61,10 @@ export const CourseDetails = ({ course }: CourseDetailsProps) => {
     if (course.price === 0) {
       const responseOrder = await createOrder({ courseId: course._id });
       if (responseOrder.data.success) {
-        refetch();
         socket?.emit("notification", {
           title: "New Order",
           message: `You have a new order from ${course.name}`,
-          userId: user?._id,
+          userId: userData?._id,
         });
         toast.success("Course purchased successfully.");
         redirect(`/course-access/${course._id}`);
@@ -155,31 +152,33 @@ export const CourseDetails = ({ course }: CourseDetailsProps) => {
             <p className="leading-relaxed">{course.description}</p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold mb-6">Student Reviews</h2>
-            <div className="space-y-6">
-              {[...course.reviews].reverse().map((r) => (
-                <div
-                  key={r._id}
-                  className="flex space-x-4 bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm"
-                >
-                  <div className="flex-shrink-0 bg-blue-500 text-white rounded-full h-10 w-10 flex items-center justify-center">
-                    {r.user.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold">{r.user.name}</span>
-                      <Ratings rating={r.rating} />
+          {course.reviews.length ? (
+            <section>
+              <h2 className="text-2xl font-semibold mb-6">Student Reviews</h2>
+              <div className="space-y-6">
+                {[...course.reviews].reverse().map((r) => (
+                  <div
+                    key={r._id}
+                    className="flex space-x-4 bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-sm"
+                  >
+                    <div className="flex-shrink-0 bg-blue-500 text-white rounded-full h-10 w-10 flex items-center justify-center">
+                      {r.user.name.charAt(0).toUpperCase()}
                     </div>
-                    <p className="mb-2">{r.comment}</p>
-                    <small className="text-xs text-zinc-500 dark:text-zinc-400">
-                      {format(r.createdAt)}
-                    </small>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-semibold">{r.user.name}</span>
+                        <Ratings rating={r.rating} />
+                      </div>
+                      <p className="mb-2">{r.comment}</p>
+                      <small className="text-xs text-zinc-500 dark:text-zinc-400">
+                        {format(r.createdAt)}
+                      </small>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          ) : null}
         </div>
 
         <aside className="space-y-6">
@@ -234,17 +233,17 @@ export const CourseDetails = ({ course }: CourseDetailsProps) => {
       </div>
       <>
         {openCheckout && stripePromise && clientSecret && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg w-full max-w-md">
+          <div className="fixed inset-0 text-white bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-scroll py-2">
+            <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg w-full max-w-md mt-2">
               <div className="flex justify-end">
                 <IoMdCloseCircleOutline
                   size={24}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-black dark:text-white"
                   onClick={() => setOpenCheckout(false)}
                 />
               </div>
               <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm course={course} user={user} />
+                <CheckoutForm course={course} user={userData} />
               </Elements>
             </div>
           </div>

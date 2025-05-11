@@ -46,6 +46,12 @@ export const authSlice = createSlice({
         ? { ...state.user, role: action.payload.role }
         : null;
     },
+    userUpdatedCourses: (state, action) => {
+      state.token = state.token;
+      state.user = state.user
+        ? { ...state.user, courses: action.payload.userCourses }
+        : null;
+    },
   },
 });
 
@@ -54,4 +60,5 @@ export const {
   userLoggedIn,
   userLoggedOut,
   userUpdatedRole,
+  userUpdatedCourses,
 } = authSlice.actions;

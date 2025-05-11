@@ -1,10 +1,10 @@
 "use client";
 
-import { Header } from "../../../components/layout/Header";
-import { Heading } from "../../utils/Heading";
 import { useSelector } from "react-redux";
 import { IRootState } from "@/redux/store";
 import { Footer } from "@/components/public/Footer";
+import { Heading } from "@/app/utils/Heading";
+import { Header } from "@/components/layout/Header";
 
 export default function ProfileLayout({
   children,

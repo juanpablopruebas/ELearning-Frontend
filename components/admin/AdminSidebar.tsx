@@ -28,13 +28,18 @@ import {
 import { useSelector } from "react-redux";
 import "react-pro-sidebar/dist/css/styles.css";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { useLogoutQuery } from "@/redux/features/api/authApi";
 
 export const AdminSidebar = () => {
   const { user } = useSelector((state: IRootState) => state.auth);
   const [activeItem, setActiveItem] = useState<MenuItemKey>("dashboard");
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { theme } = useTheme();
+  const [triggerLogout, setTriggerLogout] = useState(false);
+  const { theme, systemTheme } = useTheme();
   const pathname = usePathname();
+  const { data: dataSession, status } = useSession();
+  const {} = useLogoutQuery(undefined, { skip: !triggerLogout });
 
   useEffect(() => {
     const routeMap: { prefix: string; id: MenuItemKey }[] = [
@@ -58,7 +63,13 @@ export const AdminSidebar = () => {
     setActiveItem(found ? found.id : "dashboard");
   }, [pathname]);
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    if (status === "authenticated" && dataSession?.user) {
+      await signOut();
+      return;
+    }
+    setTriggerLogout(true);
+  };
 
   return (
     <div className={`${isCollapsed ? "w-22" : "w-60"}`}>
@@ -69,7 +80,14 @@ export const AdminSidebar = () => {
         sx={{
           "& .pro-sidebar-inner": {
             width: isCollapsed ? "5rem" : "15rem",
-            background: theme === "dark" ? "#18181b" : "#f9fafb",
+            background:
+              theme === "system"
+                ? systemTheme === "dark"
+                  ? "#18181b"
+                  : "#f9fafb"
+                : theme === "dark"
+                ? "#18181b"
+                : "#f9fafb",
           },
           "& .pro-sidebar-layout": {
             paddingRight: isCollapsed ? "0" : "1rem",
@@ -102,7 +120,15 @@ export const AdminSidebar = () => {
                   <IconButton>
                     <MdMenu
                       size={20}
-                      color={`${theme === "dark" ? "#fff" : "#1f2937"}`}
+                      color={`${
+                        theme === "system"
+                          ? systemTheme === "dark"
+                            ? "#fff"
+                            : "#1f2937"
+                          : theme === "dark"
+                          ? "#fff"
+                          : "#1f2937"
+                      }`}
                     />
                   </IconButton>
                 ) : undefined
@@ -120,7 +146,17 @@ export const AdminSidebar = () => {
             {!isCollapsed && (
               <Box className="mb-6 text-center">
                 <IconButton onClick={() => setIsCollapsed(true)}>
-                  <MdMenu color={`${theme === "dark" ? "#fff" : "#1f2937"}`} />
+                  <MdMenu
+                    color={`${
+                      theme === "system"
+                        ? systemTheme === "dark"
+                          ? "#fff"
+                          : "#1f2937"
+                        : theme === "dark"
+                        ? "#fff"
+                        : "#1f2937"
+                    }`}
+                  />
                 </IconButton>
                 <div className="flex justify-center mb-4 mt-2">
                   <img
@@ -279,8 +315,8 @@ export const AdminSidebar = () => {
               )}
               <SidebarItem
                 id="settings"
-                label="Settings"
-                to="/admin/settings"
+                label="Profile"
+                to="/profile"
                 icon={<MdSettings size={20} />}
                 activeItem={activeItem}
                 isCollapsed={isCollapsed}
@@ -289,7 +325,6 @@ export const AdminSidebar = () => {
                 <SidebarItem
                   id="logout"
                   label="Logout"
-                  to="/"
                   icon={<MdExitToApp size={20} />}
                   activeItem={activeItem}
                   isCollapsed={isCollapsed}
@@ -324,7 +359,7 @@ interface SidebarItemProps {
   label: string;
   icon: JSX.Element;
   activeItem: MenuItemKey;
-  to: string;
+  to?: string;
   isCollapsed: boolean;
 }
 
@@ -349,7 +384,7 @@ export const SidebarItem = ({
       }`}
     >
       <span className="text-sm font-medium">{label}</span>
-      <Link href={to} />
+      {to ? <Link href={to} /> : null}
     </MenuItem>
   );
 

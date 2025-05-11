@@ -25,7 +25,7 @@ type AllUsersType = {
 
 export const AllUsers = ({ isTeam = false }: AllUsersType) => {
   const { user } = useSelector((state: IRootState) => state.auth);
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
   const [openUpdateRoleModal, setOpenUpdateRoleModal] = useState(false);
@@ -89,15 +89,17 @@ export const AllUsers = ({ isTeam = false }: AllUsersType) => {
   };
 
   const handleUserUpdateRole = () => {
-    if (user?._id === "test@test.com") {
+    if (userId === process.env.ADMIN_ID) {
       toast.error(`You can't demote this user`);
+      return;
     }
     updateUserRole({ id: userId, role: newRole });
   };
 
   const handleDelete = () => {
-    if (user?._id === "test@test.com") {
+    if (userId === process.env.ADMIN_ID) {
       toast.error(`You can't delete this user`);
+      return;
     }
     if (isCurrentUser) {
       toast.error(`You can't delete yourself`);
@@ -190,24 +192,65 @@ export const AllUsers = ({ isTeam = false }: AllUsersType) => {
               overflow: "scroll",
               "& .MuiDataGrid-root": { border: "none" },
               "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
               "& .MuiDataGrid-row": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
               "& .MuiDataGrid-row--borderBottom": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
                 backgroundColor:
-                  theme === "dark" ? "#18181b !important" : "#fff !important",
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#18181b !important"
+                      : "#fff !important"
+                    : theme === "dark"
+                    ? "#18181b !important"
+                    : "#fff !important",
               },
               "& .MuiDataGrid-columnSeparator": {
                 display: "none !important",
               },
               "& .MuiSvgIcon-root": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
               "& .MuiTablePagination-root": {
-                color: theme === "dark" ? "#fff" : "#000",
+                color:
+                  theme === "system"
+                    ? systemTheme === "dark"
+                      ? "#fff"
+                      : "#000"
+                    : theme === "dark"
+                    ? "#fff"
+                    : "#000",
               },
             }}
           >
