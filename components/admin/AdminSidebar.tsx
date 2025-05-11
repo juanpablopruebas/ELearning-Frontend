@@ -70,6 +70,8 @@ export const AdminSidebar = () => {
     setTriggerLogout(true);
   };
 
+  const currentTheme = theme === "system" ? systemTheme : theme;
+
   return (
     <div className={`${isCollapsed ? "w-22" : "w-60"}`}>
       <Box
@@ -79,14 +81,7 @@ export const AdminSidebar = () => {
         sx={{
           "& .pro-sidebar-inner": {
             width: isCollapsed ? "5rem" : "15rem",
-            background:
-              theme === "system"
-                ? systemTheme === "dark"
-                  ? "#18181b"
-                  : "#f9fafb"
-                : theme === "dark"
-                ? "#18181b"
-                : "#f9fafb",
+            background: currentTheme === "dark" ? "#18181b" : "#f9fafb",
           },
           "& .pro-sidebar-layout": {
             paddingRight: isCollapsed ? "0" : "1rem",

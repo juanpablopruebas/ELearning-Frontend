@@ -108,6 +108,12 @@ export const AllCourses = () => {
     deleteCourse(courseId);
   };
 
+  const currentTheme = theme === "system" ? systemTheme : theme;
+
+  const textColor = currentTheme === "dark" ? "#fff" : "#000";
+  const bgColor =
+    currentTheme === "dark" ? "#18181b !important" : "#fff !important";
+
   return (
     <div className="grid bg-gray-100 dark:bg-zinc-800 rounded-md p-6">
       {isLoading ? (
@@ -121,67 +127,17 @@ export const AllCourses = () => {
               display: "grid",
               overflow: "scroll",
               "& .MuiDataGrid-root": { border: "none" },
-              "& .MuiDataGrid-sortIcon": {
-                color:
-                  theme === "system"
-                    ? systemTheme === "dark"
-                      ? "#fff"
-                      : "#000"
-                    : theme === "dark"
-                    ? "#fff"
-                    : "#000",
-              },
-              "& .MuiDataGrid-row": {
-                color:
-                  theme === "system"
-                    ? systemTheme === "dark"
-                      ? "#fff"
-                      : "#000"
-                    : theme === "dark"
-                    ? "#fff"
-                    : "#000",
-              },
+              "& .MuiDataGrid-sortIcon": { color: textColor },
+              "& .MuiDataGrid-row": { color: textColor },
               "& .MuiDataGrid-row--borderBottom": {
-                color:
-                  theme === "system"
-                    ? systemTheme === "dark"
-                      ? "#fff"
-                      : "#000"
-                    : theme === "dark"
-                    ? "#fff"
-                    : "#000",
-                backgroundColor:
-                  theme === "system"
-                    ? systemTheme === "dark"
-                      ? "#18181b !important"
-                      : "#fff !important"
-                    : theme === "dark"
-                    ? "#18181b !important"
-                    : "#fff !important",
+                color: textColor,
+                backgroundColor: bgColor,
               },
               "& .MuiDataGrid-columnSeparator": {
                 display: "none !important",
               },
-              "& .MuiSvgIcon-root": {
-                color:
-                  theme === "system"
-                    ? systemTheme === "dark"
-                      ? "#fff"
-                      : "#000"
-                    : theme === "dark"
-                    ? "#fff"
-                    : "#000",
-              },
-              "& .MuiTablePagination-root": {
-                color:
-                  theme === "system"
-                    ? systemTheme === "dark"
-                      ? "#fff"
-                      : "#000"
-                    : theme === "dark"
-                    ? "#fff"
-                    : "#000",
-              },
+              "& .MuiSvgIcon-root": { color: textColor },
+              "& .MuiTablePagination-root": { color: textColor },
             }}
           >
             <DataGrid
