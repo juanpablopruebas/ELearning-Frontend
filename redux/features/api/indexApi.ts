@@ -15,11 +15,11 @@ export const indexApi = createApi({
       }),
     }),
     loadUser: builder.query({
-      query: (noCache) => ({
+      query: (withCache) => ({
         url: "me",
         method: "GET",
         credentials: "include",
-        params: typeof noCache === "boolean" ? { noCache } : undefined,
+        params: typeof withCache === "boolean" ? { withCache } : undefined,
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
@@ -29,8 +29,8 @@ export const indexApi = createApi({
               user: result.data.user,
             }) //Missing el token
           );
-        } catch (error) {
-          console.log(error);
+        } catch {
+          // console.log(error);
         }
       },
     }),
