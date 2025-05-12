@@ -8,7 +8,7 @@ import {
 } from "@/redux/features/api/notificationApi";
 import { NotificationData } from "@/types";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { MdNotifications } from "react-icons/md";
 import { format } from "timeago.js";
 
@@ -20,50 +20,38 @@ export const DashboardHeader = () => {
   const pathname = usePathname();
   const socket = useSocket();
 
-  const { data, refetch } = useGetNotificationsQuery(
-    {},
-    { refetchOnMountOrArgChange: true }
-  );
-  const [updateNotificationStatus, { isSuccess, isLoading }] =
+  const { data, refetch } = useGetNotificationsQuery();
+
+  const [updateNotificationStatus, { isLoading }] =
     useUpdateNotificationStatusMutation();
 
   const [audio] = useState(
-    new Audio(
-      "https://res.cloudinary.com/ddecqru91/video/upload/v1745731969/ding-126626_fbpaln.mp3"
-    )
+    () =>
+      new Audio(
+        "https://res.cloudinary.com/ddecqru91/video/upload/v1745731969/ding-126626_fbpaln.mp3"
+      )
   );
-
   const playNotificationSound = useCallback(() => {
     audio.play();
   }, [audio]);
 
   useEffect(() => {
     if (data?.notifications) {
-      setNotifications(
-        data.notifications.filter(
-          (item: NotificationData) => item.status === "unread"
-        )
-      );
+      setNotifications(data.notifications.filter((n) => n.status === "unread"));
     }
-
-    if (isSuccess) {
-      refetch();
-    }
-    audio.load();
-  }, [audio, data?.notifications, isSuccess, refetch]);
+  }, [data?.notifications]);
 
   useEffect(() => {
     if (!socket) return;
 
     const handleNewNotification = () => {
-      refetch();
+      void refetch();
       if (pathname?.startsWith("/admin")) {
         playNotificationSound();
       }
     };
 
     socket.on("newNotification", handleNewNotification);
-
     return () => {
       socket.off("newNotification", handleNewNotification);
     };
@@ -82,7 +70,7 @@ export const DashboardHeader = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleNotificationStatusChange = (id: string) => {
+  const handleMarkAsRead = (id: string) => {
     if (isLoading) return;
     updateNotificationStatus(id);
   };
@@ -93,7 +81,7 @@ export const DashboardHeader = () => {
       <div className="relative ml-4">
         <button
           aria-label="Notifications"
-          onClick={() => setOpen(!open)}
+          onClick={() => setOpen((open) => !open)}
           className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition"
         >
           <MdNotifications
@@ -137,7 +125,8 @@ export const DashboardHeader = () => {
                       {format(n.createdAt)}
                     </p>
                     <button
-                      onClick={() => handleNotificationStatusChange(n._id)}
+                      onClick={() => handleMarkAsRead(n._id)}
+                      disabled={isLoading}
                       className="text-blue-600 text-xs hover:underline disabled:opacity-50"
                     >
                       Mark as read

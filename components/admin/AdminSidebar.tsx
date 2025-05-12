@@ -29,17 +29,16 @@ import { useSelector } from "react-redux";
 import "react-pro-sidebar/dist/css/styles.css";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { useLogoutQuery } from "@/redux/features/api/authApi";
+import { useLogoutMutation } from "@/redux/features/api/authApi";
 
 export const AdminSidebar = () => {
   const { user } = useSelector((state: IRootState) => state.auth);
   const [activeItem, setActiveItem] = useState<MenuItemKey>("dashboard");
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [triggerLogout, setTriggerLogout] = useState(false);
   const { theme, systemTheme } = useTheme();
   const pathname = usePathname();
   const { data: dataSession, status } = useSession();
-  const {} = useLogoutQuery(undefined, { skip: !triggerLogout });
+  const [logout] = useLogoutMutation();
 
   useEffect(() => {
     const routeMap: { prefix: string; id: MenuItemKey }[] = [
@@ -67,7 +66,7 @@ export const AdminSidebar = () => {
     if (status === "authenticated" && dataSession?.user) {
       await signOut();
     }
-    setTriggerLogout(true);
+    logout({});
   };
 
   const currentTheme = theme === "system" ? systemTheme : theme;

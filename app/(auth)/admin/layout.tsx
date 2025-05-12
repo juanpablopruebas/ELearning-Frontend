@@ -1,23 +1,37 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import { useSelector } from "react-redux";
-import { IRootState } from "@/redux/store";
 import { Heading } from "@/app/utils/Heading";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { DashboardHeader } from "@/components/admin/DashboardHeader";
 import { SocketProvider } from "@/app/utils/SocketProvider";
+import { useRouter } from "next/navigation";
+import { useLoadUserQuery } from "@/redux/features/api/indexApi";
+import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
+import { Loader } from "@/components/layout/Loader";
 
 export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user } = useSelector((state: IRootState) => state.auth);
+  const router = useRouter();
+  const { data, isLoading } = useLoadUserQuery({});
+  const user = data?.user;
 
-  const isAdmin = user?.role === "admin";
+  const hasRedirected = useRef(false);
 
-  return isAdmin ? (
+  useEffect(() => {
+    if (!isLoading && user?.role !== "admin" && !hasRedirected.current) {
+      toast.error("Unauthorized: Admins only.");
+      hasRedirected.current = true;
+      router.push("/");
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || user?.role !== "admin") return <Loader />;
+
+  return (
     <>
       <Heading
         title="ELearning"
@@ -34,7 +48,5 @@ export default function AdminLayout({
         </div>
       </div>
     </>
-  ) : (
-    redirect("/")
   );
 }

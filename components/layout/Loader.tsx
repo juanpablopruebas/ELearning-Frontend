@@ -5,3 +5,9 @@ export const Loader = () => {
     </div>
   );
 };
+
+export const MiniAvatarLoader = () => {
+  return (
+    <div className="w-10 h-10 rounded-full animate-pulse bg-gray-300 dark:bg-zinc-600" />
+  );
+};

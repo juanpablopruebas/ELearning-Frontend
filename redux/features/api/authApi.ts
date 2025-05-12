@@ -1,5 +1,5 @@
 import { indexApi } from "./indexApi";
-import { userLoggedIn, userLoggedOut, userRegistration } from "../slice/authSlice";
+import { userLoggedIn, userRegistration } from "../slice/authSlice";
 
 type RegistrationResponse = {
   message: string;
@@ -50,6 +50,7 @@ export const authApi = indexApi.injectEndpoints({
         },
         credentials: "include",
       }),
+      invalidatesTags: ["User"],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
@@ -75,6 +76,7 @@ export const authApi = indexApi.injectEndpoints({
         },
         credentials: "include",
       }),
+      invalidatesTags: ["User"],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
@@ -89,19 +91,20 @@ export const authApi = indexApi.injectEndpoints({
         }
       },
     }),
-    logout: builder.query({
+    logout: builder.mutation({
       query: () => ({
         url: "logout",
-        method: "GET",
+        method: "POST",
         credentials: "include",
       }),
-      async onQueryStarted(arg, { dispatch }) {
-        try {
-          dispatch(userLoggedOut());
-        } catch (error) {
-          console.log(error);
-        }
-      },
+      invalidatesTags: ["User"],
+      // async onQueryStarted(arg, { dispatch }) {
+      //   try {
+      //     dispatch(userLoggedOut());
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // },
     }),
   }),
   overrideExisting: "throw",
@@ -112,5 +115,5 @@ export const {
   useActivationMutation,
   useLoginMutation,
   useSocialAuthMutation,
-  useLogoutQuery,
+  useLogoutMutation,
 } = authApi;

@@ -44,18 +44,19 @@ export const userApi = indexApi.injectEndpoints({
     }),
     updateMyselfUserRole: builder.mutation({
       query: ({ id, role }) => ({
-        url: "/update-user-role",
+        url: "/update-myself-role",
         method: "PUT",
         body: { id, role },
         credentials: "include",
       }),
+      invalidatesTags: ["User"],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
           dispatch(
             userUpdatedRole({
               role: result.data.user.role,
-            }) //Missing el token
+            })
           );
         } catch (error) {
           console.log(error);

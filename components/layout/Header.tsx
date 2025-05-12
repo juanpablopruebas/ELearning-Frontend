@@ -9,16 +9,18 @@ import { HiOutlineMenuAlt3, HiOutlineUserCircle, HiX } from "react-icons/hi";
 import { usePathname } from "next/navigation";
 import { CustomModals } from "../../app/utils/CustomModal";
 import { useModalStore } from "../../app/hooks/modalStore";
-import { useSelector } from "react-redux";
-import { IRootState } from "@/redux/store";
 import { SessionProvider } from "next-auth/react";
+import { useLoadUserQuery } from "@/redux/features/api/indexApi";
+import { MiniAvatarLoader } from "./Loader";
 
 export const Header = () => {
-  const { user } = useSelector((state: IRootState) => state.auth);
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
   const pathname = usePathname();
   const { setOpenModal } = useModalStore();
+
+  const { data, isLoading } = useLoadUserQuery({});
+  const user = data?.user;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,8 +48,8 @@ export const Header = () => {
           </nav>
           <div className="flex items-center space-x-4">
             <ThemeSwitcher />
-            {user ? (
-              <Link href={"/profile"}>
+            {!isLoading && user ? (
+              <Link href="/profile">
                 <img
                   src={
                     user?.avatar
@@ -60,13 +62,15 @@ export const Header = () => {
                   className="rounded-full select-none cursor-pointer"
                 />
               </Link>
-            ) : (
+            ) : null}
+            {!isLoading && !user ? (
               <HiOutlineUserCircle
                 size={25}
                 className="hidden md:block cursor-pointer text-gray-900 dark:text-white"
                 onClick={() => setOpenModal("signin")}
               />
-            )}
+            ) : null}
+            {isLoading ? <MiniAvatarLoader /> : null}
             <HiOutlineMenuAlt3
               size={25}
               className="md:hidden cursor-pointer text-gray-900 dark:text-white"
@@ -76,7 +80,6 @@ export const Header = () => {
         </div>
       </div>
       <hr className="border-black dark:border-white" />
-
       {openSidebar && (
         <div
           className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -94,9 +97,8 @@ export const Header = () => {
             </button>
             <div className="text-center py-6">
               <Link
-                href={`/`}
+                href="/"
                 className="text-2xl font-bold text-gray-900 dark:text-white"
-                passHref
                 onClick={() => setOpenSidebar(false)}
               >
                 LMS
@@ -104,8 +106,8 @@ export const Header = () => {
             </div>
             <NavItems activeItem={pathname} />
             <div className="w-full flex justify-center mt-4">
-              {user ? (
-                <Link href={"/profile"}>
+              {!isLoading && user ? (
+                <Link href="/profile">
                   <img
                     src={
                       user?.avatar
@@ -118,13 +120,15 @@ export const Header = () => {
                     className="rounded-full select-none cursor-pointer"
                   />
                 </Link>
-              ) : (
+              ) : null}
+              {!isLoading && !user ? (
                 <HiOutlineUserCircle
                   size={25}
                   className="cursor-pointer text-gray-900 dark:text-white"
                   onClick={() => setOpenModal("signin")}
                 />
-              )}
+              ) : null}
+              {isLoading ? <MiniAvatarLoader /> : null}
             </div>
           </div>
         </div>

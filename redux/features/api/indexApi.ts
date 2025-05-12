@@ -6,6 +6,7 @@ export const indexApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_SERVER_URL,
   }),
+  tagTypes: ["User", "Notifications"],
   endpoints: (builder) => ({
     refreshToken: builder.query({
       query: () => ({
@@ -21,6 +22,7 @@ export const indexApi = createApi({
         credentials: "include",
         params: typeof withCache === "boolean" ? { withCache } : undefined,
       }),
+      providesTags: ["User"],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;

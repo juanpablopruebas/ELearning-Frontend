@@ -3,7 +3,7 @@
 import { IRootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLogoutQuery } from "@/redux/features/api/authApi";
+import { useLogoutMutation } from "@/redux/features/api/authApi";
 import { SidebarProfile } from "@/components/profile/SidebarProfile";
 import { ProfileInfo } from "@/components/profile/ProfileInfo";
 import { ChangePassword } from "@/components/profile/ChangePassword";
@@ -23,17 +23,16 @@ export const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(
     user?.avatar?.url
   );
-  const [triggerLogout, setTriggerLogout] = useState(false);
   const [userCourses, setUserCourses] = useState<Course[]>([]);
 
-  const {} = useLogoutQuery(undefined, { skip: !triggerLogout });
+  const [logout] = useLogoutMutation();
   const { data, isLoading } = useGetCoursesByUserQuery({});
 
   const handleLogout = async () => {
     if (status === "authenticated" && dataSession?.user) {
       await signOut();
     }
-    setTriggerLogout(true);
+    logout({});
   };
 
   useEffect(() => {
