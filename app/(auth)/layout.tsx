@@ -16,7 +16,7 @@ export default function AuthLayout({
   const user = data?.user;
 
   useEffect(() => {
-    if (!isLoading && (user === null || !user?.isVerified)) {
+    if (!isLoading && (!user || !user?.isVerified)) {
       router.push("/");
     }
   }, [user, isLoading, router]);
