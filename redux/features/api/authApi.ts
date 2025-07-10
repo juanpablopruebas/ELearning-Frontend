@@ -1,5 +1,9 @@
 import { indexApi } from "./indexApi";
-import { userLoggedIn, userRegistration } from "../slice/authSlice";
+import {
+  userLoggedIn,
+  userLoggedOut,
+  userRegistration,
+} from "../slice/authSlice";
 
 type RegistrationResponse = {
   message: string;
@@ -98,13 +102,13 @@ export const authApi = indexApi.injectEndpoints({
         credentials: "include",
       }),
       invalidatesTags: ["User"],
-      // async onQueryStarted(arg, { dispatch }) {
-      //   try {
-      //     dispatch(userLoggedOut());
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // },
+      async onQueryStarted(arg, { dispatch }) {
+        try {
+          dispatch(userLoggedOut());
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
   }),
   overrideExisting: "throw",
