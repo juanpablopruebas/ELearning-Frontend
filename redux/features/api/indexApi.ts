@@ -16,11 +16,10 @@ export const indexApi = createApi({
       }),
     }),
     loadUser: builder.query({
-      query: (withCache) => ({
+      query: () => ({
         url: "me",
         method: "GET",
         credentials: "include",
-        params: typeof withCache === "boolean" ? { withCache } : undefined,
       }),
       providesTags: ["User"],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
