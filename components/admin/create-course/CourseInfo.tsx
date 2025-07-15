@@ -110,10 +110,10 @@ export const CourseInfo: FC<CourseInfoProps> = ({
   }, [data?.layout?.categories]);
 
   useEffect(() => {
-    if (courseInfo.name) {
+    if (categories.length > 0) {
       setRefreshCategory(true);
     }
-  }, [courseInfo.name]);
+  }, [categories]);
 
   return (
     <form
@@ -199,7 +199,7 @@ export const CourseInfo: FC<CourseInfoProps> = ({
           </form.AppField>
         )}
       </form.Subscribe>
-      {refreshCategory && (
+      {refreshCategory ? (
         <form.Subscribe
           selector={(state) => state.errors?.[0]?.categories?.[0].message}
         >
@@ -216,7 +216,8 @@ export const CourseInfo: FC<CourseInfoProps> = ({
             </form.AppField>
           )}
         </form.Subscribe>
-      )}
+      ) : null}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <form.Subscribe
           selector={(state) => state.errors?.[0]?.level?.[0].message}

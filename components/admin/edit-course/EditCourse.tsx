@@ -37,7 +37,7 @@ export const EditCourse: FC<EditCourseProps> = ({ id }) => {
     level: "",
     demoUrl: "",
     thumbnail: "",
-    // categories: "",
+    categories: "",
   });
   const [benefits, setBenefits] = useState([{ title: "" }]);
   const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
@@ -66,7 +66,7 @@ export const EditCourse: FC<EditCourseProps> = ({ id }) => {
         description: editCourseData.description,
         price: editCourseData.price.toString(),
         estimatedPrice: editCourseData.estimatedPrice
-          ? editCourseData.estimatedPrice
+          ? String(editCourseData.estimatedPrice)
           : "",
         tags: editCourseData.tags,
         level: editCourseData.level,
