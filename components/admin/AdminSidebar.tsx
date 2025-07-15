@@ -48,6 +48,7 @@ export const AdminSidebar = () => {
       { prefix: "/admin/create-course", id: "createCourse" },
       { prefix: "/admin/courses-analytics", id: "courseAnalytics" },
       { prefix: "/admin/courses", id: "liveCourses" },
+      { prefix: "/admin/edit-course", id: "liveCourses" },
       { prefix: "/admin/hero", id: "hero" },
       { prefix: "/admin/faq", id: "faq" },
       { prefix: "/admin/categories", id: "categories" },
